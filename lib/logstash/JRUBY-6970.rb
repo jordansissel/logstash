@@ -46,7 +46,7 @@ class File
             # 'expand_path' on "/" will return "C:/" on windows.
             # So like.. we don't want that because technically this
             # is the root of the jar, not of a disk.
-            puts :expand_path => [path, "#{jar}!#{resource.gsub(/^[A-Z]:/, "")}"]
+            #puts :expand_path => [path, "#{jar}!#{resource.gsub(/^[A-Z]:/, "")}"]
             return "#{jar}!#{resource.gsub(/^[A-Z]:/, "")}"
           else
             return "#{jar}!#{resource}"
