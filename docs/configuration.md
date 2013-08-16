@@ -35,6 +35,34 @@ Comments are as in ruby, perl, and python. Starts with a '#' character. Example:
 
     # this is a comment
 
+    input { # comments can appear at the end of a line, too
+      # ...
+    }
+
+## Plugins
+
+The input, filter, and output sections all let you configure plugins. Plugins
+configuration consists of the plugin name followed by a block of settings for
+that plugin. For example, how about two file inputs:
+
+    input {
+      file {
+        path => "/var/log/messages"
+        type => "syslog"
+      }
+
+      file {
+        path => "/var/log/apache/access.log"
+        type => "apache"
+      }
+    }
+
+The above configures a two file inputs. Both set two config settings each:
+path and type. Each plugin has different settings for configuring it, seek the
+documentation for your plugin to learn what settings are available and what they mean. For example, the [file input][fileinput] documentation will explain the meanings of the path and type settings.
+
+[fileinput]: inputs/file
+
 ## Value Types
 
 The documentation for a plugin may say that a config field has a certain type.
@@ -42,11 +70,12 @@ Examples include boolean, string, array, number, hash, etc.
 
 ### <a name="boolean"></a>Boolean
 
-A boolean must be either true or false.
+A boolean must be either true or false. Quoted or unquoted doesn't matter.
 
 Examples:
 
     debug => true
+    enabled => false
 
 ### <a name="string"></a>String
 
@@ -56,15 +85,17 @@ Example:
 
     name => "Hello world"
 
-Single, unquoted words are valid as strings, too, but you should use quotes.
+Single, unquoted words are valid as strings, too, but you should use quotes for
+consistency.
 
 ### <a name="number"></a>Number
 
-Numbers must be valid numerics (floating point or integer are OK)
+Numbers can be whole number or decimal values (100, 40.43, etc)
 
 Example:
 
     port => 33
+    delay => 0.100
 
 ### <a name="array"></a>Array
 
@@ -80,18 +111,11 @@ The above makes 'path' a 3-element array including all 3 strings.
 
 ### <a name="hash"></a>Hash
 
-A 'hash' is currently represented using the same syntax as an array (see above).
-The 'key' and 'value' are simply pairs, such as:
+A hash The 'key' and 'value' are simply pairs, such as:
 
-    match => [ "field1", "pattern1", "field2", "pattern2" ]
+    match => { "field1" => "pattern1", "field2" => "pattern2" }
 
-The above would internally be represented as this hash: `{ "field1" =>
-"pattern1", "field2" => "pattern2" }`
-
-Why this syntax? Well frankly it was easier than adding additional grammar to
-the config language. Logstash may support ruby- or json-like hash syntax in the
-future, but not today.
-
-## Further reading
+## Further Reading
 
 For more information, see [the plugin docs index](index)
+
