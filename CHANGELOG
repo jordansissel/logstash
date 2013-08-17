@@ -19,6 +19,13 @@
   - bugfix: rabbitmq was broken by the previous release (LOGSTASH-1003,
     LOGSTASH-1038; Patch by Jason Koppe)
 
+  ## plugin api
+  - The 'validate' value of :hash is now named :map. The old symbol (:hash)
+    is still supported for now.
+  - 'plugin_status' was replaced with 'milestone' to help more distinctly
+    convey the maturity of a plugin without using words like 'beta' for which
+    users may already have a meaning.
+
 1.1.10 (April 16, 2013)
   ## general
   - On linux, all threads will set their process names so you can identify

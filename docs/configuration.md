@@ -66,7 +66,7 @@ documentation for your plugin to learn what settings are available and what they
 ## Value Types
 
 The documentation for a plugin may say that a config field has a certain type.
-Examples include boolean, string, array, number, hash, etc.
+Examples include boolean, string, array, number, map, etc.
 
 ### <a name="boolean"></a>Boolean
 
