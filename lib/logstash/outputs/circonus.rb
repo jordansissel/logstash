@@ -31,7 +31,7 @@ class LogStash::Outputs::Circonus < LogStash::Outputs::Base
   #   ["title":"Logstash event", "description":"Logstash event for %{@source_host}"]
   # or
   #   ["title":"Logstash event", "description":"Logstash event for %{@source_host}", "parent_id", "1"]
-  config :annotation, :validate => :hash, :required => true, :default => {}
+  config :annotation, :validate => :map, :required => true, :default => {}
 
   public
   def register

@@ -44,7 +44,7 @@ class LogStash::Filters::Prune < LogStash::Filters::Base
   #                               "status", "^[^2]" ]
   #       }
   #     }
-  config :whitelist_values, :validate => :hash, :default => {}
+  config :whitelist_values, :validate => :map, :default => {}
 
   # Exclude specified fields if their values match regexps.
   # In case field values are arrays, the fields are pruned on per array item
@@ -58,7 +58,7 @@ class LogStash::Filters::Prune < LogStash::Filters::Base
   #                               "status", "^[^2]" ]
   #       }
   #     }
-  config :blacklist_values, :validate => :hash, :default => {}
+  config :blacklist_values, :validate => :map, :default => {}
 
   public
   def register

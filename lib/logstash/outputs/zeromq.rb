@@ -52,7 +52,7 @@ class LogStash::Outputs::ZeroMQ < LogStash::Outputs::Base
   # * ZMQ::SWAP_SIZE - space for disk overflow
   #
   # Example: sockopt => ["ZMQ::HWM", 50, "ZMQ::IDENTITY", "my_named_queue"]
-  config :sockopt, :validate => :hash
+  config :sockopt, :validate => :map
 
   public
   def register

@@ -33,7 +33,7 @@ class LogStash::Filters::Translate < LogStash::Filters::Base
   #                         "202", "Accepted" ]
   #       }
   #     }
-  config :dictionary, :validate => :hash,  :default => {}
+  config :dictionary, :validate => :map,  :default => {}
 
   # name with full path of external dictionary file.    
   # format of the table should be a YAML file which will be merged with the @dictionary.

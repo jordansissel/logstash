@@ -319,13 +319,14 @@ module LogStash::Config::Mixin
         value = hash_or_array(value)
 
         case validator
-          when :hash
+          when :hash, :map
             if value.is_a?(Hash)
               return true, value
             end
 
+            # if an array was given, assume [key1, value1, key2, value2 ...]
             if value.size % 2 == 1
-              return false, "This field must contain an even number of items, got #{value.size}"
+              return false, "This attribute must contain an even number of items, got #{value.size}"
             end
 
             # Convert the array the config parser produces into a hash.

@@ -47,10 +47,10 @@ class LogStash::Outputs::Statsd < LogStash::Outputs::Base
   config :decrement, :validate => :array, :default => []
 
   # A timing metric. metric_name => duration as hash
-  config :timing, :validate => :hash, :default => {}
+  config :timing, :validate => :map, :default => {}
 
   # A count metric. metric_name => count as hash
-  config :count, :validate => :hash, :default => {}
+  config :count, :validate => :map, :default => {}
 
   # The sample rate for the metric
   config :sample_rate, :validate => :number, :default => 1

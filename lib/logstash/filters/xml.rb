@@ -75,7 +75,7 @@ class LogStash::Filters::Xml < LogStash::Filters::Base
   # The xpath functions are particularly powerful:
   # http://www.w3schools.com/xpath/xpath_functions.asp
   #
-  config :xpath, :validate => :hash, :default => {}
+  config :xpath, :validate => :map, :default => {}
 
   # By default the filter will store the whole parsed xml in the destination
   # field as described above. Setting this to false will prevent that.

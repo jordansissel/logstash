@@ -20,7 +20,7 @@ class LogStash::Filters::Mutate < LogStash::Filters::Base
   #         rename => [ "HOSTORIP", "client_ip" ]
   #       }
   #     }
-  config :rename, :validate => :hash
+  config :rename, :validate => :map
 
   # Remove one or more fields.
   #
@@ -43,7 +43,7 @@ class LogStash::Filters::Mutate < LogStash::Filters::Base
   #         replace => [ "@message", "%{source_host}: My new message" ]
   #       }
   #     }
-  config :replace, :validate => :hash
+  config :replace, :validate => :map
 
   # Convert a field's value to a different type, like turning a string to an
   # integer. If the field value is an array, all members will be converted.
@@ -58,7 +58,7 @@ class LogStash::Filters::Mutate < LogStash::Filters::Base
   #         convert => [ "fieldname", "integer" ]
   #       }
   #     }
-  config :convert, :validate => :hash
+  config :convert, :validate => :map
 
   # Convert a string field by applying a regular expression and a replacement
   # if the field is not a string, no action will be taken
@@ -117,7 +117,7 @@ class LogStash::Filters::Mutate < LogStash::Filters::Base
   #          split => ["fieldname", ","]
   #       }
   #     }
-  config :split, :validate => :hash
+  config :split, :validate => :map
 
   # Join an array with a separator character, does nothing on non-array fields
   #
@@ -128,7 +128,7 @@ class LogStash::Filters::Mutate < LogStash::Filters::Base
   #        join => ["fieldname", ","]
   #      }
   #    }
-  config :join, :validate => :hash
+  config :join, :validate => :map
 
   # Strip whitespaces
   #
@@ -154,7 +154,7 @@ class LogStash::Filters::Mutate < LogStash::Filters::Base
   #          merge => ["dest_field", "added_field"]
   #       }
   #     }
-  config :merge, :validate => :hash
+  config :merge, :validate => :map
 
   public
   def register

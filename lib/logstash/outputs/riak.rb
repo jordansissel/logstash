@@ -13,7 +13,7 @@ class LogStash::Outputs::Riak < LogStash::Outputs::Base
   # a Logstash hash of node/port pairs
   # e.g
   # ["node1", "8098", "node2", "8098"]
-  config :nodes, :validate => :hash, :default => {"localhost" =>  "8098"}
+  config :nodes, :validate => :map, :default => {"localhost" =>  "8098"}
 
   # The protocol to use
   # HTTP or ProtoBuf
@@ -44,7 +44,7 @@ class LogStash::Outputs::Riak < LogStash::Outputs::Base
   # Note that the Logstash config language cannot support
   # hash or array values
   # Properties will be passed as-is
-  config :bucket_props, :validate => :hash
+  config :bucket_props, :validate => :map
 
   # Indices
   # Array of fields to add 2i on
@@ -70,7 +70,7 @@ class LogStash::Outputs::Riak < LogStash::Outputs::Base
   # `ssl_opts => ["pem", "/etc/riak.pem", "ca_path", "/usr/share/certificates"]
   # Per the riak client docs, the above sample options
   # will turn on SSL `VERIFY_PEER`
-  config :ssl_opts, :validate => :hash
+  config :ssl_opts, :validate => :map
 
   # Metadata (NYI)
   # Allow the user to set custom metadata on the object

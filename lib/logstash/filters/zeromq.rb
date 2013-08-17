@@ -48,7 +48,7 @@ class LogStash::Filters::ZeroMQ < LogStash::Filters::Base
   # ZMQ::SUBSCRIBE - topic filters for pubsub
   #
   # example: sockopt => ["ZMQ::HWM", 50, "ZMQ::IDENTITY", "my_named_queue"]
-  config :sockopt, :validate => :hash
+  config :sockopt, :validate => :map
 
   public
   def initialize(params)

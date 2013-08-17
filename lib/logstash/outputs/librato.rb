@@ -25,7 +25,7 @@ class LogStash::Outputs::Librato < LogStash::Outputs::Base
   # Additionally, you can override the `measure_time` for the event. Must be a unix timestamp:
   #   ["value", "%{bytes_recieved}", "source", "%{@source_host}", "name", "apache_bytes","measure_time", "%{my_unixtime_field}]
   # Default is to use the event's timestamp
-  config :gauge, :validate => :hash, :default => {}
+  config :gauge, :validate => :map, :default => {}
 
   # Counters
   # Send data to Librato as a counter
@@ -35,7 +35,7 @@ class LogStash::Outputs::Librato < LogStash::Outputs::Base
   # Additionally, you can override the `measure_time` for the event. Must be a unix timestamp:
   #   ["value", "1", "source", "%{@source_host}", "name", "messages_received", "measure_time", "%{my_unixtime_field}"]
   # Default is to use the event's timestamp
-  config :counter, :validate => :hash, :default => {}
+  config :counter, :validate => :map, :default => {}
 
   # Annotations
   # Registers an annotation with Librato
@@ -48,7 +48,7 @@ class LogStash::Outputs::Librato < LogStash::Outputs::Base
   #   ["title":"Logstash event on %{@source_host}", "name":"logstash_stream"]
   # or
   #   ["title":"Logstash event", "description":"%{@message}", "name":"logstash_stream"]
-  config :annotation, :validate => :hash, :default => {}
+  config :annotation, :validate => :map, :default => {}
 
   # Named metrics (NYI)
   # These allow multiple metrics/annotations in the same output
@@ -57,7 +57,7 @@ class LogStash::Outputs::Librato < LogStash::Outputs::Base
   # `apache_bytes => ["type", "gauge", "source", "%{@source_host}", "value", "%{bytes_received}"]`
   # (Counter)
   # `messages_received => ["type", "counter", "source", "%{@source_host}", "value", "1"]`
-  # config /[A-Za-z0-9.:_-]+/, :validate => :hash
+  # config /[A-Za-z0-9.:_-]+/, :validate => :map
 
   # Batch size
   # Number of events to batch up before sending to Librato.

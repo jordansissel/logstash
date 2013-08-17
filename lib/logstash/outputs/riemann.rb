@@ -59,7 +59,7 @@ class LogStash::Outputs::Riemann < LogStash::Outputs::Base
   #
   # `description`, by default, will be set to the event message
   # but can be overridden here.
-  config :riemann_event, :validate => :hash
+  config :riemann_event, :validate => :map
 
   #
   # Enable debugging output?

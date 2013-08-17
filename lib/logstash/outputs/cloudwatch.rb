@@ -146,7 +146,7 @@ class LogStash::Outputs::CloudWatch < LogStash::Outputs::Base
   config :field_value, :validate => :string, :default => "CW_value"
 
   # The default dimensions [ name, value, ... ] to use for events which do not have a `CW_dimensions` field   
-  config :dimensions, :validate => :hash
+  config :dimensions, :validate => :map
 
   # The name of the field used to set the dimensions on an event metric   
   # The field named here, if present in an event, must have an array of

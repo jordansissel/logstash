@@ -150,7 +150,7 @@ class LogStash::Filters::Grok < LogStash::Filters::Base
   #       }
   #     }
   #
-  config :match, :validate => :hash, :default => {}
+  config :match, :validate => :map, :default => {}
 
   # Shorthand for `match`.
   #

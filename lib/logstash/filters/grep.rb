@@ -39,7 +39,7 @@ class LogStash::Filters::Grep < LogStash::Filters::Base
   #
   # The above will drop all events with a message not matching "hello world" as
   # a regular expression.
-  config :match, :validate => :hash, :default => {}
+  config :match, :validate => :map, :default => {}
 
   # Short-hand for matching
   #

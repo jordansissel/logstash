@@ -15,7 +15,7 @@ class LogStash::Outputs::Email < LogStash::Outputs::Base
   #    "match name", "..." }
   #
   # The match name can be referenced using the `%{matchName}` field.
-  config :match, :validate => :hash, :required => true
+  config :match, :validate => :map, :required => true
 
   # The To address setting - fully qualified email address to send to
   # This field also accept a comma separated list of emails like "me@host.com, you@host.com"
@@ -73,7 +73,7 @@ class LogStash::Outputs::Email < LogStash::Outputs::Base
   # The passed in hash is just merged against the defaults with +merge!+ and the result
   # assigned the mail object.  So the above example will change only the :address value
   # of the global smtp_settings to be 'some.host', keeping all other values
-  config :options, :validate => :hash, :default => {}
+  config :options, :validate => :map, :default => {}
 
   # subject for email
   config :subject, :validate => :string, :default => ""

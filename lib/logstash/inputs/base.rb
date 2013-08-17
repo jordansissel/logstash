@@ -55,7 +55,7 @@ class LogStash::Inputs::Base < LogStash::Plugin
   config :tags, :validate => :array
 
   # Add a field to an event
-  config :add_field, :validate => :hash, :default => {}
+  config :add_field, :validate => :map, :default => {}
 
   attr_accessor :params
   attr_accessor :threadable

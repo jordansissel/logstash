@@ -63,7 +63,7 @@ class LogStash::Filters::Base < LogStash::Plugin
   #  On success, the %PLUGIN% plugin will then add field 'sample' with the
   #  value above and the %{@source} piece replaced with that value from the
   #  event.
-  config :add_field, :validate => :hash, :default => {}
+  config :add_field, :validate => :map, :default => {}
 
   RESERVED = ["type", "tags", "add_tag", "remove_tag", "add_field", "exclude_tags"]
 

@@ -35,7 +35,7 @@ class LogStash::Outputs::Graphite < LogStash::Outputs::Base
   #
   # The value will be coerced to a floating point value. Values which cannot be
   # coerced will zero (0)
-  config :metrics, :validate => :hash, :default => {}
+  config :metrics, :validate => :map, :default => {}
 
   # Indicate that the event @fields should be treated as metrics and will be sent as is to graphite
   config :fields_are_metrics, :validate => :boolean, :default => false

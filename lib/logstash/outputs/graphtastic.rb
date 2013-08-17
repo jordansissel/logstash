@@ -38,7 +38,7 @@ class LogStash::Outputs::GraphTastic < LogStash::Outputs::Base
   # metrics => [ "Response", "%{response}" ]
   #
   # NOTE: you can also use the dynamic fields for the key value as well as the actual value
-  config :metrics, :validate => :hash, :default => {}
+  config :metrics, :validate => :map, :default => {}
    
   # host for the graphtastic server - defaults to 127.0.0.1
   config :host, :validate => :string, :default => "127.0.0.1"

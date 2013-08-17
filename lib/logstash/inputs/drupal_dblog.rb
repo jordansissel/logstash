@@ -28,7 +28,7 @@ class LogStash::Inputs::DrupalDblog < LogStash::Inputs::Base
   #   "other_site", "mysql://user2:password@otherhost.com/databasename",
   #   ...
   # ]
-  config :databases, :validate => :hash
+  config :databases, :validate => :map
 
   # By default, the event only contains the current user id as a field.
   # If you whish to add the username as an additional field, set this to true.

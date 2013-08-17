@@ -68,7 +68,7 @@ class LogStash::Outputs::Gelf < LogStash::Outputs::Base
   # fields. This exposes that. Exclude the `_` portion of the field name
   # e.g. `custom_fields => ['foo_field', 'some_value']
   # sets `_foo_field` = `some_value`
-  config :custom_fields, :validate => :hash, :default => {}
+  config :custom_fields, :validate => :map, :default => {}
 
   # The GELF full message. Dynamic values like %{foo} are permitted here.
   config :full_message, :validate => :string, :default => "%{@message}"

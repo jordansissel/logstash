@@ -30,7 +30,7 @@ class LogStash::Outputs::MetricCatcher < LogStash::Outputs::Base
   #
   # The value will be coerced to a floating point value. Values which cannot be
   # coerced will zero (0)
-  config :gauge, :validate => :hash
+  config :gauge, :validate => :map
 
   # The metrics to send. This supports dynamic strings like %{@source_host}
   # for metric names and also for values. This is a hash field with key
@@ -40,7 +40,7 @@ class LogStash::Outputs::MetricCatcher < LogStash::Outputs::Base
   #
   # The value will be coerced to a floating point value. Values which cannot be
   # coerced will zero (0)
-  config :counter, :validate => :hash
+  config :counter, :validate => :map
 
   # The metrics to send. This supports dynamic strings like %{@source_host}
   # for metric names and also for values. This is a hash field with key
@@ -48,7 +48,7 @@ class LogStash::Outputs::MetricCatcher < LogStash::Outputs::Base
   #
   # The value will be coerced to a floating point value. Values which cannot be
   # coerced will zero (0)
-  config :meter, :validate => :hash
+  config :meter, :validate => :map
 
   # The metrics to send. This supports dynamic strings like %{@source_host}
   # for metric names and also for values. This is a hash field with key
@@ -56,7 +56,7 @@ class LogStash::Outputs::MetricCatcher < LogStash::Outputs::Base
   #
   # The value will be coerced to a floating point value. Values which cannot be
   # coerced will zero (0)
-  config :biased, :validate => :hash
+  config :biased, :validate => :map
 
   # The metrics to send. This supports dynamic strings like %{@source_host}
   # for metric names and also for values. This is a hash field with key
@@ -64,7 +64,7 @@ class LogStash::Outputs::MetricCatcher < LogStash::Outputs::Base
   #
   # The value will be coerced to a floating point value. Values which cannot be
   # coerced will zero (0)
-  config :uniform, :validate => :hash
+  config :uniform, :validate => :map
 
   # The metrics to send. This supports dynamic strings like %{@source_host}
   # for metric names and also for values. This is a hash field with key
@@ -74,7 +74,7 @@ class LogStash::Outputs::MetricCatcher < LogStash::Outputs::Base
   #
   # The value will be coerced to a floating point value. Values which cannot be
   # coerced will zero (0)
-  config :timer, :validate => :hash
+  config :timer, :validate => :map
 
   def register
     @socket = UDPSocket.new
