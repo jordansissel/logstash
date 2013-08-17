@@ -100,20 +100,31 @@ Example:
 ### <a name="array"></a>Array
 
 An 'array' can be a single string value or multiple. If you specify the same
-field multiple times, it appends to the array.
+attribute multiple times, it appends to the array.
 
 Examples:
 
-    path => [ "/var/log/messages", "/var/log/*.log" ]
-    path => "/data/mysql/mysql.log"
+    input {
+      file {
+        path => [ "/var/log/messages", "/var/log/*.log" ]
+        path => "/data/mysql/mysql.log"
+      }
+   }
 
 The above makes 'path' a 3-element array including all 3 strings.
 
-### <a name="hash"></a>Hash
+### <a name="Map"></a>Map
 
-A hash The 'key' and 'value' are simply pairs, such as:
+A map is a way to set key+value pairs. As an example, the mutate filter has an
+attribute 'rename' that takes a map for its value.
 
-    match => { "field1" => "pattern1", "field2" => "pattern2" }
+    filter {
+      mutate {
+        rename => { "oldname" => "newname" }
+      }
+    }
+
+If you are familiar with Perl or Ruby's hash syntax, this is the same.
 
 ## Further Reading
 
