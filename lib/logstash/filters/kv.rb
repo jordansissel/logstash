@@ -11,8 +11,8 @@ require "logstash/namespace"
 #       kv { }
 #     }
 #
-# The above will result in a message of "ip=1.2.3.4 error=REFUSED" having
-# the fields:
+# With an input message containing "ip=1.2.3.4 error=REFUSED", you will
+# have the following fields added:
 #
 # * ip: 1.2.3.4
 # * error: REFUSED
