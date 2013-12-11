@@ -24,13 +24,15 @@
     #818; Jordan Sissel)
 
   ## filters
+  - bugfix: restore filter flushing thread (LOGSTASH-1284, #689; Bernd Ahlers)
   - new: unique: removes duplicate values from a given field in an event.
     (#676, Adam Tucker)
   - new: elapsed: time duration between two tagged events. (#713, Andrea Forni)
   - new: i18n: currently supports 'transliterate' which does best-effort
     conversion of text to "plain" letters. Like 'ó' to 'o'.  (#671,
     Juarez Bochi)
-  - bugfix: restore filter flushing thread (LOGSTASH-1284, #689; Bernd Ahlers)
+  - feature: grok: Make regexp '.' match on newlines by default; previous
+    behavior was to not match newline characters. (Jordan Sissel)
   - new: elasticsearch: query elasticsearch and update your event based on the
     results. (#707, Jonathan Van Eenwyk)
   - new: sumnumbers: finds all numbers in a message and sums them (#752, Avleen
