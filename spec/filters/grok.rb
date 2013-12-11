@@ -470,4 +470,19 @@ describe LogStash::Filters::Grok do
       insist { subject["foo"] }.is_a?(String)
     end
   end
+
+  describe "should default to multiline matching" do
+    config <<-CONFIG
+      filter {
+        grok {
+          match => { "message" => "hello (?<whoa>something.fancy)" }
+        }
+      }
+    CONFIG
+
+    sample "hello something\nfancy" do
+      insist { subject["tags"] }.nil?
+      insist { subject["whoa"] } == "something\nfancy"
+    end
+  end
 end

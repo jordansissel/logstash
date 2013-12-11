@@ -272,6 +272,8 @@ class LogStash::Filters::Grok < LogStash::Filters::Base
       end
       @logger.info? and @logger.info("Grok compile", :field => field, :patterns => patterns)
       patterns.each do |pattern|
+        # Enable 'multiline' matching by default (makes '.' match a newline)
+        pattern = "(?m)#{pattern}"
         @logger.debug? and @logger.debug("regexp: #{@type}/#{field}", :pattern => pattern)
         @patterns[field].compile(pattern)
       end
