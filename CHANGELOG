@@ -8,6 +8,9 @@
   # inputs
   - bugfix: Fixes exception when not specifying yamlmibdir in snmptrap (#950, Andres Koetsier)
   - improvement: Add Multi-threaded workers and queues to UDP input (johnarnold + untergeek)
+
+  # filters
+  - improvement: fingerprint: Now supports a 'punctuation' fingerprint (Richard Pijnenburg)
   
   # outputs
   - improvement: Added `action` awesomeness to elasticsearch output (#1105, jordansissel)
