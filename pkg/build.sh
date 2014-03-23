@@ -89,8 +89,9 @@ case $os in
       --url "$URL" \
       --description "$DESCRIPTION" \
       -d "jre >= 1.6.0" \
-      --vendor "Elasticsearch" \
       --license "ASL 2.0" \
+      --category "Applications/System" \
+      --vendor "Elasticsearch BV" \
       --rpm-use-file-permissions \
       --rpm-user root --rpm-group root \
       --before-install centos/before-install.sh \
