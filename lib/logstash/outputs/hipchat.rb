@@ -35,9 +35,9 @@ class LogStash::Outputs::HipChat < LogStash::Outputs::Base
     require "uri"
 
     @agent = FTW::Agent.new
-
-    @url = "https://api.hipchat.com/v1/rooms/message?auth_token=" + @token
-    @content_type = "application/x-www-form-urlencoded"
+    l = Cabin::Channel.get
+    l.subscribe(STDOUT)
+    l.level = :debug
   end # def register
 
   public
@@ -45,19 +45,20 @@ class LogStash::Outputs::HipChat < LogStash::Outputs::Base
     return unless output?(event)
 
     hipchat_data = Hash.new
-    hipchat_data['room_id'] = @room_id
-    hipchat_data['from']    = @from
+    #hipchat_data['from']    = @from
     hipchat_data['color']   = @color
-    hipchat_data['notify']  = @trigger_notify ? "1" : "0"
+    hipchat_data['notify']  = @trigger_notify
     hipchat_data['message'] = event.sprintf(@format)
+    hipchat_data['message_format'] = "html"
 
-    @logger.debug("HipChat data", :hipchat_data => hipchat_data)
+    @logger.debug("HipChat data", :hipchat_data => hipchat_data, :url => @url)
 
+    url = "https://api.hipchat.com/v2/room/#{CGI.escape(@room_id).gsub("+", "%20")}/notification?auth_token=#{@token}"
     begin
-      request = @agent.post(@url)
-      request["Content-Type"] = @content_type
-      request.body = encode(hipchat_data)
-
+      # hack for now because ruby 2.1 changed the meaning of 'public/private' ?
+      request = @agent.request("POST", url, {})
+      request["Content-Type"] = "application/json"
+      request.body = hipchat_data.to_json
       response = @agent.execute(request)
 
       # Consume body to let this connection be reused
