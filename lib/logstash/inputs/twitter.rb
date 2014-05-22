@@ -67,8 +67,11 @@ class LogStash::Inputs::Twitter < LogStash::Inputs::Base
     @client.filter(:track => @keywords.join(",")) do |tweet|
       @logger.info? && @logger.info("Got tweet", :user => tweet.user.screen_name, :text => tweet.text)
       if @full_tweet
+        # Tweet object attributes are keyed with symbols. Let's use strings.
+        # https://github.com/sferik/twitter/issues/570
+        hash = JSON.parse(tweet.to_hash.to_json)
         event = LogStash::Event.new(
-          tweet.to_hash.merge("@timestamp" => tweet.created_at.gmtime)
+          hash.merge("@timestamp" => tweet.created_at.gmtime)
         )
       else
         event = LogStash::Event.new(
