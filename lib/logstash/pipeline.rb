@@ -53,6 +53,7 @@ class LogStash::Pipeline
 
   def configure(setting, value)
     if setting == "filter-workers"
+      @logger.info("Configuring pipeline", setting => value)
       # Abort if we have any filters that aren't threadsafe
       if value > 1 && @filters.any? { |f| !f.threadsafe? }
         plugins = @filters.select { |f| !f.threadsafe? }.collect { |f| f.class.config_name }

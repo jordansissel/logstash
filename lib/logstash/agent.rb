@@ -5,6 +5,17 @@ require "logstash/errors"
 require "i18n"
 
 class LogStash::Agent < Clamp::Command
+  DEFAULT_FILTER_WORKERS = if LogStash::Environment.jruby?
+    begin
+      LogStash::Environment.system.cpu.totalCores
+    rescue => e
+      $stderr.puts "Couldn't query system cpu info: #{e}"
+      1
+    end
+  else
+    1
+  end
+
   option ["-f", "--config"], "CONFIG_PATH",
     I18n.t("logstash.agent.flag.config"),
     :attribute_name => :config_path
@@ -15,7 +26,7 @@ class LogStash::Agent < Clamp::Command
 
   option ["-w", "--filterworkers"], "COUNT",
     I18n.t("logstash.agent.flag.filterworkers"),
-    :attribute_name => :filter_workers, :default => 1, &:to_i
+    :attribute_name => :filter_workers, :default => DEFAULT_FILTER_WORKERS, &:to_i
 
   option "--watchdog-timeout", "SECONDS",
     I18n.t("logstash.agent.flag.watchdog-timeout"),
