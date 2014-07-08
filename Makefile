@@ -156,6 +156,15 @@ $(ELASTICSEARCH): $(ELASTICSEARCH).tar.gz | vendor/jar
 	$(QUIET)tar -C $(shell dirname $@) -xf $< $(TAR_OPTS) --exclude '*sigar*' \
 		'elasticsearch-$(ELASTICSEARCH_VERSION)/lib/*.jar'
 
+vendor/sigar: vendor
+	mkdir $@
+
+.PHONY: vendor-sigar
+vendor-sigar: $(ELASTICSEARCH).tar.gz | vendor/sigar
+	@echo "=> Pulling the sigar libraries out of $<"
+	$(QUIET)tar -C vendor/sigar/ -xf $< $(TAR_OPTS) --strip-components=3 \
+		"elasticsearch-$(ELASTICSEARCH_VERSION)/lib/sigar/*"
+
 vendor/geoip: | vendor
 	$(QUIET)mkdir $@
 

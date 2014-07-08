@@ -13,4 +13,10 @@ describe LogStash::Environment do
       expect{LogStash::Environment.load_elasticsearch_jars!}.to raise_error(LogStash::EnvironmentError)
     end
   end
+
+  describe "#system" do
+    it "should allow detection of cpu counts" do
+      insist { LogStash::Environment.system.cpu.getTotalCores } > 0
+    end
+  end
 end

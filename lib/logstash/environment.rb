@@ -5,7 +5,9 @@ module LogStash
     extend self
 
     LOGSTASH_HOME = ::File.expand_path(::File.join(::File.dirname(__FILE__), "/../.."))
-    JAR_DIR = ::File.join(LOGSTASH_HOME, "/vendor/jar")
+    VENDOR_DIR = ::File.join(LOGSTASH_HOME, "vendor")
+    SIGAR_DIR = ::File.join(VENDOR_DIR, "sigar")
+    JAR_DIR = ::File.join(VENDOR_DIR, "jar")
 
     # loads currently embedded elasticsearch jars
     # @raise LogStash::EnvironmentError if not running under JRuby or if no jar files are found
@@ -42,6 +44,36 @@ module LogStash
     # @return [String] the ruby version string bundler uses to craft its gem path
     def gem_ruby_version
       RbConfig::CONFIG["ruby_version"]
+    end
+
+    def load_sigar!
+      raise(LogStash::EnvironmentError, "JRuby is required") unless jruby?
+
+      require "java"
+      jars_path = ::File.join(SIGAR_DIR, "*.jar")
+      jar_files = Dir.glob(jars_path)
+
+      raise(LogStash::EnvironmentError, "Could not find sigar jar files under #{JAR_DIR}") if jar_files.empty?
+
+      jar_files.each do |jar|
+        loaded = require jar
+        puts("Loaded #{jar}") if $DEBUG && loaded
+      end
+    end
+
+    # Returns org.elasticsearch.monitor.os.OsInfo for the current os.
+    #
+    # Uses the Sigar library (and Elasticsearch's API wrapping it) to get this
+    # information.
+    def system
+      if @osprobe.nil?
+        load_elasticsearch_jars!
+        load_sigar!
+        settings = org.elasticsearch.common.settings.ImmutableSettings.builder.build
+        sigar = org.elasticsearch.monitor.sigar.SigarService.new(settings)
+        @osprobe = org.elasticsearch.monitor.os.SigarOsProbe.new(settings, sigar)
+      end
+      @osprobe.osInfo
     end
 
     # @return [String] jruby, ruby, rbx, ...
