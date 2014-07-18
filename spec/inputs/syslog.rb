@@ -36,5 +36,36 @@ describe "inputs/syslog", :socket => true do
       end
     end
   end
+
+  describe "tags invalid events" do
+    port = 5511
+    event_count = 10
+
+    config <<-CONFIG
+      input {
+        syslog {
+          type => "blah"
+          port => #{port}
+        }
+      }
+    CONFIG
+
+    input do |pipeline, queue|
+      Thread.new { pipeline.run }
+      sleep 0.1 while !pipeline.ready?
+
+      socket = Stud.try(5.times) { TCPSocket.new("127.0.0.1", port) }
+      event_count.times do |i|
+        socket.puts("This is not valid RFC3164 syslog message")
+      end
+      socket.close
+
+      events = event_count.times.collect { queue.pop }
+      event_count.times do |i|
+        insist { events[i]["message"] } == "This is not valid RFC3164 syslog message"
+        insist { events[i]["tags"] }.include?("_invalid_rfc3164_syslog")
+      end
+    end
+  end
 end
 

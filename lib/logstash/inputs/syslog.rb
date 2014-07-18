@@ -18,6 +18,8 @@ require "socket"
 # RFC3164 style or ISO8601. Otherwise the rest of RFC3164 must be obeyed.
 # If you do not use RFC3164, do not use this input.
 #
+# If you send invalid messages to this input, your events will be tagged `_invalid_rfc3164_syslog`
+#
 # For more information see (the RFC3164 page)[http://www.ietf.org/rfc/rfc3164.txt].
 #
 # Note: this input will start listeners on both TCP and UDP.
@@ -56,10 +58,13 @@ class LogStash::Inputs::Syslog < LogStash::Inputs::Base
     @grok_filter = LogStash::Filters::Grok.new(
       "overwrite" => "message",
       "match" => { "message" => "<%{POSINT:priority}>%{SYSLOGLINE}" },
+      "tag_on_failure" => "_invalid_rfc3164_syslog"
     )
 
     @date_filter = LogStash::Filters::Date.new(
       "match" => [ "timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss", "ISO8601"]
+      # RFC3164 appears fixated on English locale.
+      "locale" => "en"
     )
 
     @grok_filter.register
