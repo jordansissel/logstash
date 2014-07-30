@@ -12,9 +12,7 @@ require "logstash/namespace"
 #
 # For more information about Redis, see <http://redis.io/>
 #
-# `batch_count` note: If you use the `batch_count` setting, you *must* use a Redis version 2.6.0 or
-# newer. Anything older does not support the operations used by batching.
-#
+# Redis 2.6.0 or newer required.
 class LogStash::Inputs::Redis < LogStash::Inputs::Threadable
   config_name "redis"
   milestone 2
@@ -40,57 +38,40 @@ class LogStash::Inputs::Redis < LogStash::Inputs::Threadable
   # Password to authenticate with. There is no authentication by default.
   config :password, :validate => :password
 
-  # The name of the Redis queue (we'll use BLPOP against this).
-  # TODO: remove soon.
+  # This setting is invalid and deprecated.
   config :queue, :validate => :string, :deprecated => true
 
   # The name of a Redis list or channel.
-  # TODO: change required to true
-  config :key, :validate => :string, :required => false
+  config :key, :validate => :string, :required => true
 
-  # Specify either list or channel.  If `redis\_type` is `list`, then we will BLPOP the
-  # key.  If `redis\_type` is `channel`, then we will SUBSCRIBE to the key.
-  # If `redis\_type` is `pattern_channel`, then we will PSUBSCRIBE to the key.
+  # Specify either list or channel.  If `data\_type` is `list`, then we will BLPOP the
+  # key.  If `data\_type` is `channel`, then we will SUBSCRIBE to the key.
+  # If `data\_type` is `pattern_channel`, then we will PSUBSCRIBE to the key.
   # TODO: change required to true
-  config :data_type, :validate => [ "list", "channel", "pattern_channel" ], :required => false
+  config :data_type, :validate => [ "list", "channel", "pattern_channel" ], :default => "list"
 
-  # The number of events to return from Redis using EVAL.
-  config :batch_count, :validate => :number, :default => 1
+  # When `data_type` is `list`, we will fetch items in bulk from Redis. This
+  # setting configures how many events to fetch. The goal is to ammortize the 
+  # network round-trip cost of querying Redis. Bulk fetching is done using a
+  # custom Lua script that attempts `batch_count` `RPOP` calls on Redis.
+  #
+  # To disable bulk fetching, set `batch_count` to `.
+  config :batch_count, :validate => :number, :default => 100
 
   public
   def register
     require 'redis'
     @redis = nil
-    @redis_url = "redis://#{@password}@#{@host}:#{@port}/#{@db}"
 
     # TODO remove after setting key and data_type to true
     if @queue
-      if @key or @data_type
-        raise RuntimeError.new(
-          "Cannot specify queue parameter and key or data_type"
-        )
-      end
+      @logger.warn("redis input: The `queue` setting is deprecated. Please use the `key` setting.")
       @key = @queue
-      @data_type = 'list'
     end
 
-    if not @key or not @data_type
-      raise RuntimeError.new(
-        "Must define queue, or key and data_type parameters"
-      )
-    end
-    # end TODO
-
-    @logger.info("Registering Redis", :identity => identity)
+    @logger.info("Registering Redis", :data_type => @data_type, :key => @key, :host => @host)
   end # def register
 
-  # A string used to identify a Redis instance in log messages
-  # TODO(sissel): Use instance variables for this once the @name config
-  # option is removed.
-  private
-  def identity
-    @name || "#{@redis_url} #{@data_type}:#{@key}"
-  end
 
   private
   def connect
@@ -231,6 +212,13 @@ EOF
         @logger.warn("Redis connection problem", :exception => e)
         sleep 1
         @redis = connect
+      rescue Redis::CommandError => e
+        if e.to_s =~ /ERR unknown command 'script'/
+          @logger.error("Your redis server is too old and does not support the `script` command which is required for bulk reads. Please upgrade your redis server to at least redis version 2.6.")
+          return nil
+        else
+          raise e
+        end
       rescue => e # Redis error
         @logger.warn("Failed to get event from Redis", :name => @name,
                      :exception => e, :backtrace => e.backtrace)
