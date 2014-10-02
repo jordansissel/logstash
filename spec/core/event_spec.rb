@@ -317,4 +317,55 @@ describe LogStash::Event do
     end
   end
 
+  context "metadata" do
+    context "with existing metadata" do
+      subject { LogStash::Event.new("hello" => "world", "@metadata" => { "fancy" => "pants" }) }
+      it "should not include metadata in to_hash" do
+        reject { subject.to_hash.keys }.include?("@metadata")
+
+        # 'hello', '@timestamp', and '@version'
+        insist { subject.to_hash.keys.count } == 3
+      end
+    end
+
+    context "with set metadata" do
+      let(:fieldref) { "[@metadata][foo][bar]" }
+      let(:value) { "bar" }
+      subject { LogStash::Event.new }
+      before do
+        # Verify the test is configured correctly.
+        insist { fieldref }.start_with?("[@metadata]")
+
+        # Set it.
+        subject[fieldref] = value
+      end
+      it "should allow getting" do
+        insist { subject[fieldref] } == value
+      end
+      it "should be hidden from .to_json" do
+        require "json"
+        obj = JSON.parse(subject.to_json)
+        reject { obj }.include?("@metadata")
+      end
+      it "should be hidden from .to_hash" do
+        reject { subject.to_hash }.include?("@metadata")
+      end
+
+      it "should be accessible as an event through #to_hash_with_metadata" do
+        obj = subject.to_hash_with_metadata
+        p obj
+        insist { obj }.include?("@metadata")
+        insist { obj["@metadata"]["foo"]["bar"] } == value
+      end
+    end
+    
+    context "with no metadata" do
+      subject { LogStash::Event.new }
+      it "should have no metadata" do
+        insist { subject["@metadata"] }.nil?
+      end
+    end
+
+  end
+
 end

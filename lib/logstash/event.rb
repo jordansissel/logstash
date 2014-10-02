@@ -61,6 +61,13 @@ class LogStash::Event
     @accessors = LogStash::Util::Accessors.new(data)
     @data[VERSION] ||= VERSION_ONE
     @data[TIMESTAMP] = init_timestamp(@data[TIMESTAMP])
+
+    @metadata = if @data.include?("@metadata")
+      @data.delete("@metadata")
+    else
+      {}
+    end
+    @metadata_accessors = LogStash::Util::Accessors.new(@metadata)
   end # def initialize
 
   public
@@ -116,7 +123,11 @@ class LogStash::Event
   # field-related access
   public
   def [](fieldref)
-    @accessors.get(fieldref)
+    if fieldref.start_with?("[@metadata]") || fieldref == "@metadata"
+      @metadata_accessors.get(fieldref)
+    else
+      @accessors.get(fieldref)
+    end
   end # def []
 
   public
@@ -126,7 +137,11 @@ class LogStash::Event
     if fieldref == TIMESTAMP && !value.is_a?(LogStash::Timestamp)
       raise TypeError, "The field '@timestamp' must be a (LogStash::Timestamp, not a #{value.class} (#{value})"
     end
-    @accessors.set(fieldref, value)
+    if fieldref.start_with?("[@metadata]")
+      @metadata_accessors.set(fieldref, value)
+    else
+      @accessors.set(fieldref, value)
+    end
   end # def []=
 
   public
@@ -265,4 +280,19 @@ class LogStash::Event
 
     LogStash::Timestamp.now
   end
+
+  public
+  def to_hash_with_metadata
+    if @metadata.nil?
+      to_hash
+    else
+      to_hash.merge(@metadata)
+    end
+  end
+
+  public
+  def to_json_with_metadata(*args)
+    # ignore arguments to respect accepted to_json method signature
+    LogStash::Json.dump(to_hash_with_metadata)
+  end # def to_json
 end # class LogStash::Event
