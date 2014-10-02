@@ -342,18 +342,19 @@ describe LogStash::Event do
       it "should allow getting" do
         insist { subject[fieldref] } == value
       end
+
       it "should be hidden from .to_json" do
         require "json"
         obj = JSON.parse(subject.to_json)
         reject { obj }.include?("@metadata")
       end
+
       it "should be hidden from .to_hash" do
         reject { subject.to_hash }.include?("@metadata")
       end
 
-      it "should be accessible as an event through #to_hash_with_metadata" do
+      it "should be accessible through #to_hash_with_metadata" do
         obj = subject.to_hash_with_metadata
-        p obj
         insist { obj }.include?("@metadata")
         insist { obj["@metadata"]["foo"]["bar"] } == value
       end
