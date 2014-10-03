@@ -121,10 +121,14 @@ class LogStash::Event
   end # def unix_timestamp
 
   # field-related access
+  METADATA = "@metadata".freeze
+  METADATA_BRACKETS = "[#{METADATA}]".freeze
   public
   def [](fieldref)
-    if fieldref.start_with?("[@metadata]") || fieldref == "@metadata"
-      @metadata_accessors.get(fieldref)
+    if fieldref.start_with?(METADATA_BRACKETS)
+      @metadata_accessors.get(fieldref[METADATA_BRACKETS.length .. -1])
+    elsif fieldref == METADATA
+      @metadata
     else
       @accessors.get(fieldref)
     end
@@ -137,8 +141,10 @@ class LogStash::Event
     if fieldref == TIMESTAMP && !value.is_a?(LogStash::Timestamp)
       raise TypeError, "The field '@timestamp' must be a (LogStash::Timestamp, not a #{value.class} (#{value})"
     end
-    if fieldref.start_with?("[@metadata]")
-      @metadata_accessors.set(fieldref, value)
+    if fieldref.start_with?(METADATA_BRACKETS)
+      @metadata_accessors.set(fieldref[METADATA_BRACKETS.length .. -1], value)
+    elsif fieldref == METADATA
+      @metadata = value
     else
       @accessors.set(fieldref, value)
     end
@@ -286,7 +292,7 @@ class LogStash::Event
     if @metadata.nil?
       to_hash
     else
-      to_hash.merge(@metadata)
+      to_hash.merge("@metadata" => @metadata)
     end
   end
 

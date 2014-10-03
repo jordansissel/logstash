@@ -34,7 +34,7 @@ describe LogStash::Event do
 
     it "should assign simple fields" do
       insist { subject["foo"] }.nil?
-      insist { subject["foo"] = "bar"} == "bar"
+      insist { subject["foo"] = "bar" } == "bar"
       insist { subject["foo"] } == "bar"
     end
 
@@ -200,7 +200,7 @@ describe LogStash::Event do
 
     data = { "@timestamp" => "2013-12-21T07:25:06.605Z" }
     event = LogStash::Event.new(data)
-    insist { event["@timestamp"] }.is_a?(Time)
+    insist { event["@timestamp"] }.is_a?(LogStash::Timestamp)
 
     duration = 0
     [warmup, count].each do |i|
@@ -339,6 +339,7 @@ describe LogStash::Event do
         # Set it.
         subject[fieldref] = value
       end
+
       it "should allow getting" do
         insist { subject[fieldref] } == value
       end
@@ -363,7 +364,7 @@ describe LogStash::Event do
     context "with no metadata" do
       subject { LogStash::Event.new }
       it "should have no metadata" do
-        insist { subject["@metadata"] }.nil?
+        insist { subject["@metadata"] }.empty?
       end
     end
 
