@@ -326,18 +326,26 @@ describe LogStash::Event do
         # 'hello', '@timestamp', and '@version'
         insist { subject.to_hash.keys.count } == 3
       end
+
+      it "should still allow normal field access" do
+        insist { subject["hello"] } == "world"
+      end
     end
 
     context "with set metadata" do
       let(:fieldref) { "[@metadata][foo][bar]" }
       let(:value) { "bar" }
-      subject { LogStash::Event.new }
+      subject { LogStash::Event.new("normal" => "normal") }
       before do
         # Verify the test is configured correctly.
         insist { fieldref }.start_with?("[@metadata]")
 
         # Set it.
         subject[fieldref] = value
+      end
+
+      it "should still allow normal field access" do
+        insist { subject["normal"] } == "normal"
       end
 
       it "should allow getting" do
@@ -362,9 +370,12 @@ describe LogStash::Event do
     end
     
     context "with no metadata" do
-      subject { LogStash::Event.new }
+      subject { LogStash::Event.new("foo" => "bar") }
       it "should have no metadata" do
         insist { subject["@metadata"] }.empty?
+      end
+      it "should still allow normal field access" do
+        insist { subject["foo"] } == "bar"
       end
     end
 
