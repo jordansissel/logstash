@@ -67,6 +67,7 @@ class LogStash::Event
     else
       {}
     end
+    @has_metadata = @metadata.empty?
     @metadata_accessors = LogStash::Util::Accessors.new(@metadata)
   end # def initialize
 
@@ -125,10 +126,14 @@ class LogStash::Event
   METADATA_BRACKETS = "[#{METADATA}]".freeze
   public
   def [](fieldref)
-    if fieldref.start_with?(METADATA_BRACKETS)
-      @metadata_accessors.get(fieldref[METADATA_BRACKETS.length .. -1])
-    elsif fieldref == METADATA
-      @metadata
+    if @has_metadata
+      if fieldref.start_with?(METADATA_BRACKETS)
+        @metadata_accessors.get(fieldref[METADATA_BRACKETS.length .. -1])
+      elsif fieldref == METADATA
+        @metadata
+      else
+        @accessors.get(fieldref)
+      end
     else
       @accessors.get(fieldref)
     end
@@ -142,8 +147,10 @@ class LogStash::Event
       raise TypeError, "The field '@timestamp' must be a (LogStash::Timestamp, not a #{value.class} (#{value})"
     end
     if fieldref.start_with?(METADATA_BRACKETS)
+      @has_metadata = true
       @metadata_accessors.set(fieldref[METADATA_BRACKETS.length .. -1], value)
     elsif fieldref == METADATA
+      @has_metadata = true
       @metadata = value
     else
       @accessors.set(fieldref, value)
