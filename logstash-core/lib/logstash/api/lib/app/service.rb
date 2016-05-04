@@ -37,10 +37,18 @@ class LogStash::Api::Service
 
   def get(key)
     metric_store = @snapshot.metric_store
-    if key == :jvm_memory_stats
-      data = metric_store.get_with_path("jvm/memory")[:jvm][:memory]
+
+    # TODO(sissel): This maybe should be refactored to work similarly to the command factory, maybe?
+    # TODO(sissel): Someting like `return LogStash::Json.dump(ServiceFactory.run(key))`
+    data = case key
+    when :jvm_memory_stats
+      metric_store.get_with_path("jvm/memory")[:jvm][:memory]
+    when :events_stats
+      metric_store.get_with_path("stats/events")
+    when :pipelines_stats
+      metric_store.get_with_path("stats/pipelines")
     else
-      data = metric_store.get_with_path("stats/events")
+      raise ArgumentError, "Unknown service key #{key}"
     end
     LogStash::Json.dump(data)
   end

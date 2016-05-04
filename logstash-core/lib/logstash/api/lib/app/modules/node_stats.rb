@@ -37,6 +37,11 @@ module LogStash::Api
       respond_with jvm_payload
     end
 
+    get "/pipelines" do
+      command = factory.build(:pipelines_command)
+      respond_with({ :pipelines => command.run })
+    end
+
     private
 
     def jvm_payload
