@@ -154,9 +154,9 @@ module LogStash module Plugins
 
         begin
           require path
-        rescue LoadError
-          # Plugin might be already defined in the current scope
-          # This scenario often happen in test when we write an adhoc class
+        rescue LoadError => e
+          logger.error("Tried to load a plugin's code, but failed.", :exception => e, :path => path, :type => type, :name => plugin_name)
+          raise
         end
 
         klass = namespace_lookup(type, plugin_name)
